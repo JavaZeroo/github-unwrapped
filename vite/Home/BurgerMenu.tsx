@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { animated, useTransition } from "react-spring";
-import { GithubIcon } from "../../icons/GithubIcon";
+import { GiteeIcon } from "../../icons/GiteeIcon";
 import { NewRocketIcon } from "../../icons/NewRocketIcon";
 import styles from "./burger.module.css";
 
@@ -21,10 +21,10 @@ export const BurgerMenu = () => {
             <animated.div style={style} className={styles.navWrapper}>
               <a
                 target="_blank"
-                href={"https://github.com/remotion-dev/github-unwrapped"}
+                href={"https://gitee.com/JavaZeroo/gitee-unwrapped"}
               >
                 <div className={styles.navLink}>
-                  <GithubIcon width={24} height={24} />
+                  <GiteeIcon width={24} height={24} />
                   Source Code
                 </div>
               </a>

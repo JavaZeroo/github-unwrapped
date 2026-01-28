@@ -24,7 +24,7 @@ export const VideoBoxTop: React.FC<{
             className={gradientStyles.gradientText2}
             style={{ fontSize: 18, marginLeft: 7 }}
           >
-            #GitHubUnwrapped
+            #GiteeUnwrapped
           </h2>
         </Link>
         <div className={boxStyles.linkContainer}>

@@ -8,54 +8,45 @@ import {
   registerResetAttempt,
 } from "./db.js";
 import { sendDiscordMessage } from "./discord.js";
-import { getStatsFromGitHubOrCache } from "./get-stats-from-github-or-cache.js";
-import { getRandomGithubToken } from "./github-token.js";
+import { getStatsFromGiteeOrCache } from "./get-stats-from-gitee-or-cache.js";
+import { getRandomGiteeToken } from "./gitee-token.js";
 
-export const executeGitHubGraphQlQuery = async ({
-  username,
+// Helper function to make Gitee API requests
+export const executeGiteeApiRequest = async ({
+  endpoint,
   token,
-  query,
+  method = "GET",
 }: {
-  username: string | null;
+  endpoint: string;
   token: string;
-  query: string;
+  method?: string;
 }) => {
-  const res = await fetch(`https://api.github.com/graphql`, {
-    method: "post",
-    body: JSON.stringify({ query }),
+  const url = new URL(`https://gitee.com/api/v5${endpoint}`);
+  url.searchParams.append("access_token", token);
+
+  const res = await fetch(url.toString(), {
+    method,
     headers: {
-      Authorization: `Bearer ${token}`,
       "content-type": "application/json",
     },
   });
+
   const rateLimit = res.headers.get("x-ratelimit-remaining");
 
-  if (Number(rateLimit) < 1000) {
+  if (rateLimit && Number(rateLimit) < 1000) {
     sendDiscordMessage(`Rate limit remaining: ${rateLimit}`);
   }
 
-  const response = await res.json();
-  if (response.errors) {
-    if (
-      response.errors?.[0].message?.includes(
-        "Could not resolve to a User with the login",
-      )
-    ) {
-      return null;
-    }
-
-    throw new Error(JSON.stringify(response.errors[0].message));
+  if (res.status === 404) {
+    return null;
   }
 
-  if (username === null) {
-    if (response.data) {
-      return response.data.viewer;
-    }
-
-    throw new Error("Unexpected response from GitHub");
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Gitee API error: ${res.status} - ${errorText}`);
   }
 
-  return response.data.user;
+  return res.json();
 };
 
 export const statsEndPoint = async (request: Request, response: Response) => {
@@ -66,9 +57,9 @@ export const statsEndPoint = async (request: Request, response: Response) => {
   try {
     const { username, refreshCache } = StatsRequest.parse(request.body);
 
-    await getStatsFromGitHubOrCache({
+    await getStatsFromGiteeOrCache({
       username,
-      token: getRandomGithubToken(),
+      token: getRandomGiteeToken(),
       refreshCache,
     });
 

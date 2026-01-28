@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Button } from "../Button/Button";
 import { Input } from "../Input/Input";
-import { SignInWithGitHub } from "../SignInWithGitHub";
+import { SignInWithGitee } from "../SignInWithGitee";
 import styles from "./styles.module.css";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const getRandomUsername = () => {
-  const usernames = ["steven-tey", "awesomekling", "wcandillon", "mehmetademi"];
+  const usernames = ["gitee", "oschina", "openharmony", "mindspore"];
   return usernames[Math.floor(Math.random() * usernames.length)];
 };
 
@@ -26,17 +26,17 @@ export const LoginOptions: React.FC<Props> = ({
 
   const placeholderString =
     window.innerWidth > 640
-      ? `Your GitHub Username (e.g. ${placeholderUsername})`
-      : "Your GitHub Username";
+      ? `Your Gitee Username (e.g. ${placeholderUsername})`
+      : "Your Gitee Username";
 
   const handleClick: React.FormEventHandler<HTMLFormElement> = useCallback(
     (e) => {
       e.preventDefault();
       const cleanedUsername = removeWhitespace(username);
-      fetch(`https://api.github.com/users/${cleanedUsername}`)
+      fetch(`https://gitee.com/api/v5/users/${cleanedUsername}`)
         .then((response) => response.json())
         .then((result) => {
-          if (result.message === "Not Found") {
+          if (result.message === "Not Found" || result.message) {
             setUserNotFound(true);
           } else {
             setUserNotFound(false);
@@ -69,7 +69,7 @@ export const LoginOptions: React.FC<Props> = ({
       <div className={styles.divider} />
       <div className={styles.privateContributions}>
         Want to include private activity?
-        <SignInWithGitHub />
+        <SignInWithGitee />
       </div>
     </div>
   );

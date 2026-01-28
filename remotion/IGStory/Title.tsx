@@ -24,7 +24,7 @@ export const Title: React.FC<{
       }}
     >
       <Img
-        src={`https://github.com/${login}.png`}
+        src={`https://gitee.com/${login}.png`}
         style={{
           width: 60,
           height: 60,

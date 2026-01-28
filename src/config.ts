@@ -182,7 +182,7 @@ export type ProfileStats = {
   openIssues: number;
   closedIssues: number;
   fetchedAt: number;
-  loggedInWithGitHub: boolean;
+  loggedInWithGitee: boolean;
   totalStars: number;
   sampleStarredRepos: {
     author: string;

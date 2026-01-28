@@ -114,7 +114,7 @@ export const OpeningTitle: React.FC<
           <TitleImage startAngle={startAngle} login={login} rocket={rocket} />
           <div>
             <div>
-              This is my <strong>#GitHubUnwrapped</strong>
+              This is my <strong>#GiteeUnwrapped</strong>
             </div>
             <div style={title}>{login}</div>
           </div>

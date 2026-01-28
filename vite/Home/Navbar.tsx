@@ -10,7 +10,7 @@ export const Navbar: React.FC<{ children?: ReactNode }> = ({ children }) => {
       <div style={{ flex: 1, alignItems: "center" }}>{children}</div>
       <Link to={"/"}>
         <h2 className={commonStyles.gradientText2} style={{ fontSize: 18 }}>
-          #GitHubUnwrapped
+          #GiteeUnwrapped
         </h2>
       </Link>
 

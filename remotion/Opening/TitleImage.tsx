@@ -25,7 +25,7 @@ export const accentColorToGradient = (): GradientType => {
 };
 
 export const getAvatarImage = (login: string) => {
-  return `https://github.com/${login}.png`;
+  return `https://gitee.com/${login}.png`;
 };
 
 export const TitleImage: React.FC<z.infer<typeof openingTitleSchema>> = ({

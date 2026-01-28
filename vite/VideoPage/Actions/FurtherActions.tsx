@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { PrivateContributionsIcon } from "../../../icons/PrivateContributionsIcon";
 import { UserIcon } from "../../../icons/UserIcon";
-import { signInWithGitHubLink } from "../../sign-in-with-github";
+import { signInWithGiteeLink } from "../../sign-in-with-gitee";
 import { FurtherAction } from "./FurtherAction";
 import styles from "./styles.module.css";
 
@@ -19,8 +19,8 @@ export const FurtherActions: React.FC = () => {
             label="Unwrap another user"
           />
         </Link>
-        {window.__USER__!.loggedInWithGitHub ? null : (
-          <a href={signInWithGitHubLink()}>
+        {window.__USER__!.loggedInWithGitee ? null : (
+          <a href={signInWithGiteeLink()}>
             <FurtherAction
               icon={(params) => (
                 <PrivateContributionsIcon {...params} width={18} />

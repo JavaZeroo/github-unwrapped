@@ -1,10 +1,15 @@
-import { executeGitHubGraphQlQuery } from "./fetch-stats.js";
-import { getQuery } from "./queries/query.js";
-import {
-  getStarredReposQuery,
-  type StarredReposQueryResponse,
-} from "./queries/stars.query.js";
+import { executeGiteeApiRequest } from "./fetch-stats.js";
 import { YEAR_TO_REVIEW } from "./year.js";
+
+interface GiteeStarredRepo {
+  id: number;
+  name: string;
+  full_name: string;
+  owner: {
+    login: string;
+  };
+  starred_at?: string;
+}
 
 export const getMoreStars = async ({
   username,
@@ -13,34 +18,45 @@ export const getMoreStars = async ({
   username: string | null;
   token: string;
 }) => {
-  let done = false;
-  let cursor: string | null = null;
+  if (!username) {
+    return [];
+  }
+
+  let page = 1;
   let safety = 0;
+  const starredRepos: Array<{ name: string; owner: string }> = [];
 
-  const pullRequestData: Array<{ name: string; owner: string }> = [];
-
-  while (!done && safety < 10) {
-    const data = (await executeGitHubGraphQlQuery({
-      username,
+  while (safety < 10) {
+    // Gitee starred repos endpoint
+    const repos = (await executeGiteeApiRequest({
+      endpoint: `/users/${username}/starred?page=${page}&per_page=100&sort=created&direction=desc`,
       token,
-      query: getQuery(username, getStarredReposQuery(cursor)),
-    })) as StarredReposQueryResponse;
+    })) as GiteeStarredRepo[] | null;
 
-    const stars = data.starredRepositories.edges
-      .filter((n) => n.starredAt.startsWith(String(YEAR_TO_REVIEW)))
-      .map((n) => ({ name: n.node.name, owner: n.node.owner.login }));
-
-    if (
-      stars.length === 0 ||
-      stars.length !== data.starredRepositories.edges.length
-    ) {
-      done = true;
+    if (!repos || repos.length === 0) {
+      break;
     }
 
-    pullRequestData.push(...stars);
-    cursor = data.starredRepositories.pageInfo.endCursor;
+    // Gitee doesn't provide starred_at in the API directly
+    // So we fetch all starred repos (they don't have date info in standard API)
+    // For now, we'll include all starred repos as we can't filter by date
+    for (const repo of repos) {
+      starredRepos.push({
+        name: repo.name,
+        owner: repo.owner.login,
+      });
+    }
+
+    // If we got less than 100, we've reached the end
+    if (repos.length < 100) {
+      break;
+    }
+
+    page++;
     safety++;
   }
 
-  return pullRequestData;
+  // Since Gitee doesn't provide starred_at date, return sample of starred repos
+  // Limit to recent 100 for reasonable sampling
+  return starredRepos.slice(0, 100);
 };

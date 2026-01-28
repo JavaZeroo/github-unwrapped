@@ -11,7 +11,7 @@ import {
   clearRendersForUsername,
   insertProfileStats,
 } from "./db.js";
-import { getStatsFromGitHub } from "./get-stats-from-github.js";
+import { getStatsFromGitee } from "./get-stats-from-gitee.js";
 
 export const loginEndPoint = async (request: Request, response: Response) => {
   if (request.method === "OPTIONS") {
@@ -41,37 +41,39 @@ export const loginEndPoint = async (request: Request, response: Response) => {
 
   const { CLIENT_SECRET, VITE_CLIENT_ID } = backendCredentials();
 
-  const formdata = new FormData();
+  // Gitee OAuth token exchange
+  const tokenUrl = new URL("https://gitee.com/oauth/token");
+  const formdata = new URLSearchParams();
+  formdata.append("grant_type", "authorization_code");
   formdata.append("client_id", VITE_CLIENT_ID);
   formdata.append("client_secret", CLIENT_SECRET);
   formdata.append("redirect_uri", makeRedirectUriBackend());
   formdata.append("code", query.code);
 
-  const paramsString = await fetch(
-    "https://github.com/login/oauth/access_token",
-    {
-      method: "POST",
-      body: formdata,
-      redirect: "follow",
+  const tokenResponse = await fetch(tokenUrl.toString(), {
+    method: "POST",
+    body: formdata,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
     },
-  );
+  });
 
-  const paramsStringText = await paramsString.text();
-  const params = new URLSearchParams(paramsStringText);
-  const access_token = params.get("access_token");
-  const error = params.get("error");
+  const tokenData = await tokenResponse.json();
+  const access_token = tokenData.access_token;
+  const error = tokenData.error;
+
   if (error) {
     throw new Error(
-      `Error with code: (${request.originalUrl}) ${decodeURIComponent(error)}`,
+      `Error with code: (${request.originalUrl}) ${tokenData.error_description || error}`,
     );
   }
 
   if (!access_token) {
-    throw new Error("No access token parameter: " + paramsStringText);
+    throw new Error("No access token in response: " + JSON.stringify(tokenData));
   }
 
-  const stats = await getStatsFromGitHub({
-    loggedInWithGitHub: true,
+  const stats = await getStatsFromGitee({
+    loggedInWithGitee: true,
     token: access_token,
     username: null,
   });
