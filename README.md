@@ -4,6 +4,20 @@ A platform that generates a year-in-review video for each Gitee user. Built with
 
 This project is adapted from [GitHub Unwrapped](https://github.com/remotion-dev/github-unwrapped) to work with Gitee instead.
 
+## 中文文档
+
+📖 **[完整部署指南 (DEPLOYMENT.md)](./DEPLOYMENT.md)** - 包含详细的中文部署说明
+
+## Quick Start / 快速开始
+
+### Prerequisites / 前置要求
+
+- Node.js 18.18.0
+- npm
+- Gitee account with OAuth application
+- MongoDB Atlas account
+- AWS account (for video rendering)
+
 ## Setup
 
 1. Run `npm i` to install dependencies.
