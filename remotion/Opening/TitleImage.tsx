@@ -13,6 +13,7 @@ import { PANE_BORDER } from "../TopLanguages/Pane";
 
 export const openingTitleSchema = z.object({
   login: z.string(),
+  avatarUrl: z.string(),
   startAngle: openingSceneStartAngle,
   rocket: rocketSchema,
 });
@@ -24,12 +25,11 @@ export const accentColorToGradient = (): GradientType => {
   return "blueRadial";
 };
 
-export const getAvatarImage = (login: string) => {
-  return `https://gitee.com/${login}.png`;
-};
+// Default fallback avatar for Gitee
+const DEFAULT_AVATAR = "https://gitee.com/assets/no_portrait.png";
 
 export const TitleImage: React.FC<z.infer<typeof openingTitleSchema>> = ({
-  login,
+  avatarUrl,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -54,7 +54,7 @@ export const TitleImage: React.FC<z.infer<typeof openingTitleSchema>> = ({
       }}
     >
       <Img
-        src={getAvatarImage(login)}
+        src={avatarUrl || DEFAULT_AVATAR}
         style={{
           width: 160,
           borderRadius: TITLE_IMAGE_INNER_BORDER_RADIUS,

@@ -12,6 +12,8 @@ import { getStatsFromGiteeOrCache } from "./get-stats-from-gitee-or-cache.js";
 import { getRandomGiteeToken } from "./gitee-token.js";
 
 // Helper function to make Gitee API requests
+// Note: Gitee API v5 accepts access_token via Authorization header (preferred)
+// or as a query parameter (fallback for some endpoints)
 export const executeGiteeApiRequest = async ({
   endpoint,
   token,
@@ -22,12 +24,12 @@ export const executeGiteeApiRequest = async ({
   method?: string;
 }) => {
   const url = new URL(`https://gitee.com/api/v5${endpoint}`);
-  url.searchParams.append("access_token", token);
 
   const res = await fetch(url.toString(), {
     method,
     headers: {
       "content-type": "application/json",
+      Authorization: `Bearer ${token}`,
     },
   });
 

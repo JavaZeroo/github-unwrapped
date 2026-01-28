@@ -34,9 +34,17 @@ export const LoginOptions: React.FC<Props> = ({
       e.preventDefault();
       const cleanedUsername = removeWhitespace(username);
       fetch(`https://gitee.com/api/v5/users/${cleanedUsername}`)
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            setUserNotFound(true);
+
+            return null;
+          }
+
+          return response.json();
+        })
         .then((result) => {
-          if (result.message === "Not Found" || result.message) {
+          if (!result || result.message) {
             setUserNotFound(true);
           } else {
             setUserNotFound(false);

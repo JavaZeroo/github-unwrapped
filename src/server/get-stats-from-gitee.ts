@@ -229,6 +229,7 @@ export const getStatsFromGitee = async ({
     loggedInWithGitee,
     username: userData.login,
     lowercasedUsername: userData.login.toLowerCase(),
+    avatarUrl: userData.avatar_url,
     bestHours: getTimesOfDay(commits),
     topWeekday: productivity.most,
     topHour: String(mostHour[0]) as Hour,
