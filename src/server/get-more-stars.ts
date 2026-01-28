@@ -1,5 +1,4 @@
 import { executeGiteeApiRequest } from "./fetch-stats.js";
-import { YEAR_TO_REVIEW } from "./year.js";
 
 interface GiteeStarredRepo {
   id: number;

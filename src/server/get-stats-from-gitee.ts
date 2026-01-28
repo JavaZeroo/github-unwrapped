@@ -1,4 +1,3 @@
-import { interpolate } from "remotion";
 import type { Hour, ProfileStats } from "../config.js";
 import { getMostProductive } from "./commits/commits.js";
 import { getTimesOfDay } from "./commits/get-times-of-day.js";
@@ -66,14 +65,16 @@ export const getStatsFromGitee = async ({
   // Get user info
   let actualUsername = username;
   if (username === null) {
-    const userData = (await executeGiteeApiRequest({
+    const currentUserData = (await executeGiteeApiRequest({
       endpoint: "/user",
       token,
     })) as GiteeUser | null;
-    if (!userData) {
+
+    if (!currentUserData) {
       return null;
     }
-    actualUsername = userData.login;
+
+    actualUsername = currentUserData.login;
   }
 
   const userData = (await executeGiteeApiRequest({
@@ -163,10 +164,14 @@ export const getStatsFromGitee = async ({
   // Calculate contribution data from events
   const contributionsByDate: Record<string, number> = {};
   const startOfYear = new Date(`${YEAR_TO_REVIEW}-01-01`);
-  const endOfYear = new Date(`${YEAR_TO_REVIEW}-12-31`);
+  const endOfYearTime = new Date(`${YEAR_TO_REVIEW}-12-31`).getTime();
 
   // Initialize all days of the year
-  for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
+  for (
+    let d = new Date(startOfYear);
+    d.getTime() <= endOfYearTime;
+    d.setDate(d.getDate() + 1)
+  ) {
     contributionsByDate[d.toISOString().split("T")[0]] = 0;
   }
 
@@ -194,6 +199,7 @@ export const getStatsFromGitee = async ({
       currentStreak = 0;
     }
   }
+
   longestStreak = Math.max(longestStreak, currentStreak);
 
   // Count open/closed issues

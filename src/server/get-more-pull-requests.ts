@@ -1,15 +1,6 @@
 import { executeGiteeApiRequest } from "./fetch-stats.js";
 import { YEAR_TO_REVIEW } from "./year.js";
 
-interface GiteePullRequest {
-  id: number;
-  number: number;
-  title: string;
-  state: string;
-  created_at: string;
-  updated_at: string;
-}
-
 export const getMorePullRequests = async ({
   username,
   token,

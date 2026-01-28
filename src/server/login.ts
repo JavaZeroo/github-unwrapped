@@ -59,8 +59,7 @@ export const loginEndPoint = async (request: Request, response: Response) => {
   });
 
   const tokenData = await tokenResponse.json();
-  const access_token = tokenData.access_token;
-  const error = tokenData.error;
+  const { access_token, error } = tokenData;
 
   if (error) {
     throw new Error(
