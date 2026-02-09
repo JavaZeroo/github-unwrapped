@@ -1,7 +1,7 @@
 import { getProfileStatsFromCache, insertProfileStats } from "./db.js";
-import { getStatsFromGitHub } from "./get-stats-from-github.js";
+import { getStatsFromGitee } from "./get-stats-from-gitee.js";
 
-export const getStatsFromGitHubOrCache = async ({
+export const getStatsFromGiteeOrCache = async ({
   username,
   token,
   refreshCache,
@@ -15,8 +15,8 @@ export const getStatsFromGitHubOrCache = async ({
     return fromCache;
   }
 
-  const stats = await getStatsFromGitHub({
-    loggedInWithGitHub: false,
+  const stats = await getStatsFromGitee({
+    loggedInWithGitee: false,
     token,
     username,
   });

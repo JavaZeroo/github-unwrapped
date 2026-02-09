@@ -1,5 +1,5 @@
 import { YEAR_TO_REVIEW } from "../../src/helpers/year";
-import { signInWithGitHubLink } from "../sign-in-with-github";
+import { signInWithGiteeLink } from "../sign-in-with-gitee";
 import styles from "../styles.module.css";
 
 export type AboutItemContent = {
@@ -21,7 +21,7 @@ export const content: Array<AboutItemContent> = [
       <>
         <p>
           To enable private contributions, you need to enable {'"'}Private
-          contributions{'"'} in your GitHub profile.
+          contributions{'"'} in your Gitee profile settings.
         </p>
         <div
           style={{
@@ -51,23 +51,23 @@ export const content: Array<AboutItemContent> = [
           </div>
         </div>
         <div>
-          Furthermore, you may need to login with GitHub and authorize the
+          Furthermore, you may need to login with Gitee and authorize the
           organizations you want to include in your video.
         </div>
         <p>
-          To reset your statistics if you logged in with GitHub, click the
+          To reset your statistics if you logged in with Gitee, click the
           button below.
         </p>
         <a
           className={styles.aboutButton}
           style={{ lineHeight: "43px" }}
-          href={signInWithGitHubLink(true)}
+          href={signInWithGiteeLink(true)}
         >
           Login again
         </a>
         <p>
           If you just entered your username, visit
-          githubunwrapped.com/YourUsername?reset=true to reset your statistics
+          giteeunwrapped.com/YourUsername?reset=true to reset your statistics
           (can be done up to three times).
         </p>
       </>
@@ -96,17 +96,14 @@ export const content: Array<AboutItemContent> = [
   {
     id: "permissions",
     icon: "/key.svg",
-    title: "Why does GitHub Unwrapped need write permission?",
+    title: "Why does Gitee Unwrapped need permissions?",
     description: "",
     node: (
       <>
-        <p>There are two types of logins: GitHub apps and OAuth logins.</p>
+        <p>We use Gitee OAuth to access your public profile and activity data.</p>
         <p>
-          We found that with GitHub apps, every organization admin needs to
-          grant access in order for the data to be included in GitHub Unwrapped.
-          <br />
-          OAuth apps don&apos;t have this limitation, but are not fine-grained -
-          we require the repository scope which also grants write access.
+          We request permissions to read your user info, projects, pull requests,
+          and issues to calculate your yearly statistics.
         </p>
         <p>
           Of course we don&apos;t write to the account, we also don&apos;t keep
@@ -115,7 +112,7 @@ export const content: Array<AboutItemContent> = [
           code we deploy is available under{" "}
           <a
             className={styles.aboutLink}
-            href="https://github.com/remotion-dev/github-unwrapped"
+            href="https://gitee.com/JavaZeroo/gitee-unwrapped"
           >
             here
           </a>
@@ -128,14 +125,13 @@ export const content: Array<AboutItemContent> = [
     id: "how-it-works",
     icon: "/book.svg",
     title: "How it works",
-    description: `We call GitHub's GraphQL API to fetch and calculate your statistics. The data cutoff is approximately 24 hours before you generated the video. The video gets created using Remotion.`,
+    description: `We call Gitee's REST API to fetch and calculate your statistics. The data cutoff is approximately 24 hours before you generated the video. The video gets created using Remotion.`,
   },
   {
     id: "how-are-top-languages-calculated",
     icon: "/calculator.svg",
     title: "How are my top languages calculated?",
-    description: `Your top languages are not exactly calculated in a scientific way but are estimated according to the following formula:
-      The list of repositories that you contributed to are fetched. A ranking is assigned to the top 3 languages (top language = 3 points, second = 2 points, third = 1 point) and they are multiplied by the contribution count and the amount of lines of that language in that repository.`,
+    description: `Your top languages are estimated based on the primary language of each repository you own or contribute to. Repositories are fetched and languages are ranked by frequency.`,
   },
   {
     id: "open-source",
@@ -147,7 +143,7 @@ export const content: Array<AboutItemContent> = [
         The{" "}
         <a
           className={styles.aboutLink}
-          href="https://github.com/remotion-dev/github-unwrapped"
+          href="https://gitee.com/JavaZeroo/gitee-unwrapped"
         >
           source code
         </a>{" "}
@@ -185,7 +181,7 @@ export const content: Array<AboutItemContent> = [
         and the source code of{" "}
         <a
           className={styles.aboutLink}
-          href="https://github.com/remotion-dev/github-unwrapped"
+          href="https://gitee.com/JavaZeroo/gitee-unwrapped"
         >
           this project
         </a>
@@ -196,11 +192,11 @@ export const content: Array<AboutItemContent> = [
   {
     id: "who-is-behind",
     icon: "/detective.svg",
-    title: "Who is behind GitHub Unwrapped?",
+    title: "Who is behind Gitee Unwrapped?",
     description: "",
     node: (
       <p>
-        The project was implemented by{" "}
+        This project is adapted from GitHub Unwrapped, originally implemented by{" "}
         <a className={styles.aboutLink} href="https://www.remotion.dev">
           Remotion
         </a>{" "}
@@ -208,8 +204,8 @@ export const content: Array<AboutItemContent> = [
         <a className={styles.aboutLink} href="https://www.foronered.com">
           For One Red
         </a>
-        {", "}
-        who also designed the entirety of this project.
+        {". "}
+        Adapted for Gitee.
       </p>
     ),
   },

@@ -118,6 +118,7 @@ export const compositionSchema = z.object({
   corner: cornerType,
   showHelperLine: z.boolean(),
   login: z.string(),
+  avatarUrl: z.string(),
   planet: PlanetEnum,
   starsGiven: z.number(),
   issuesOpened: z.number(),
@@ -179,10 +180,11 @@ export type ProfileStats = {
   totalPullRequests: number;
   username: string;
   lowercasedUsername: string;
+  avatarUrl: string;
   openIssues: number;
   closedIssues: number;
   fetchedAt: number;
-  loggedInWithGitHub: boolean;
+  loggedInWithGitee: boolean;
   totalStars: number;
   sampleStarredRepos: {
     author: string;
@@ -295,6 +297,7 @@ export const computeCompositionParameters = (
     contributionData: userStats.contributionData,
     sampleStarredRepos: userStats.sampleStarredRepos,
     longestStreak: userStats.longestStreak,
+    avatarUrl: userStats.avatarUrl,
   };
 };
 

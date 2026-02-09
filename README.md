@@ -1,21 +1,22 @@
-<img width="1200" alt="readme" src="https://github.com/remotion-dev/github-unwrapped-2023/assets/73991323/0a907f4f-a591-4d98-8b38-c90581ccfb33">
+# Gitee Unwrapped
 
-**Try it out live:** [GitHubUnwrapped.com](https://www.githubunwrapped.com)
+A platform that generates a year-in-review video for each Gitee user. Built with Vite 5, Remotion and AWS Lambda.
 
-A platform that generates a year-in-review video for each GitHub user. Built with Vite 5, Remotion and AWS Lambda.
+This project is adapted from [GitHub Unwrapped](https://github.com/remotion-dev/github-unwrapped) to work with Gitee instead.
 
-## Make your own
+## 中文文档
 
-Want to make your own year-in-review for your users?
+📖 **[完整部署指南 (DEPLOYMENT.md)](./DEPLOYMENT.md)** - 包含详细的中文部署说明
 
-Feel free to fork and use this repository as a template! Note the legal disclaimers at the bottom of this README.
+## Quick Start / 快速开始
 
-## Versions
+### Prerequisites / 前置要求
 
-- 2024: `main` branch
-- 2023: `2023` branch
-- 2022: [`github-unwrapped-2022` Repo](https://github.com/remotion-dev/github-unwrapped-2022)
-- 2021: [`github-unwrapped-2021` Repo](https://github.com/remotion-dev/github-unwrapped-2021)
+- Node.js 18.18.0
+- npm
+- Gitee account with OAuth application
+- MongoDB Atlas account
+- AWS account (for video rendering)
 
 ## Setup
 
@@ -33,10 +34,11 @@ Feel free to fork and use this repository as a template! Note the legal disclaim
 
    Note that some AWS regions are disabled by default. [If you get an error, enable them or limit yourself to only default ones.](https://remotion.dev/docs/lambda/troubleshooting/security-token)
 
-5. For caching the videos and GitHub API responses, set up a MongoDB (we use a free MongoDB Atlas Cloud instance) to save the videos. Set the connection string by filling out the values in `.env`.
-6. For fetching data from GitHub, create a personal access token in your user settings (no need to grant any scopes, the GraphQL API needs to be authenticated to get public information) and set it as `GITHUB_TOKEN_1`. Adding more tokens `GITHUB_TOKEN_2` etc. will rotate the personal access tokens.
-7. Provide `DISCORD_CHANNEL` and `DISCORD_TOKEN` values to send monitoring logs to Discord.
-8. Add a `SENTRY_DSN` environment variable to get error reports.
+5. For caching the videos and Gitee API responses, set up a MongoDB (we use a free MongoDB Atlas Cloud instance) to save the videos. Set the connection string by filling out the values in `.env`.
+6. For fetching data from Gitee, create a personal access token in your Gitee settings and set it as `GITEE_TOKEN_1`. Adding more tokens `GITEE_TOKEN_2` etc. will rotate the personal access tokens.
+7. For OAuth login with Gitee, create a Gitee OAuth application and set `VITE_CLIENT_ID` and `CLIENT_SECRET` in your `.env` file.
+8. Provide `DISCORD_CHANNEL` and `DISCORD_TOKEN` values to send monitoring logs to Discord.
+9. Add a `SENTRY_DSN` environment variable to get error reports.
 
 You now have all environment variables.
 
@@ -58,12 +60,12 @@ To deploy, connect your repository to [Render](https://render.com/). Don't forge
 
 To allow thousands of people to render their video at the same time, we applied multiple strategies for scaling:
 
-- Caching the video whenever possible. Before each render, a MongoDB database lock is created to avoid multiple renders for the same GitHub user to be accidentally created.
+- Caching the video whenever possible. Before each render, a MongoDB database lock is created to avoid multiple renders for the same Gitee user to be accidentally created.
 - Renders are distributed across an array of AWS regions and accounts to prevent hitting the [concurrency limit](https://www.remotion.dev/docs/lambda/troubleshooting/rate-limit).
 
 ## Credits
 
-We thank [GitHub](https://github.com/github) and [For One Red](https://github.com/foronered) for their support in realization and promoting of this project.
+This project is based on [GitHub Unwrapped](https://github.com/remotion-dev/github-unwrapped) by [Remotion](https://www.remotion.dev) and [For One Red](https://github.com/foronered).
 
 ## Audio copyright disclaimer
 

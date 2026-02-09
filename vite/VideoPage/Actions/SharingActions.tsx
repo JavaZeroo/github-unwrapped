@@ -7,7 +7,7 @@ import { SharingAction } from "./SharingAction";
 import styles from "./styles.module.css";
 
 export const twitterSharingLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-  "This is my #GitHubUnwrapped! Get your own: https://githubunwrapped.com",
+  "This is my #GiteeUnwrapped! Get your own: https://giteeunwrapped.com",
 )}`;
 
 export const linkedInSharingLink = "https://www.linkedin.com/";
@@ -26,7 +26,7 @@ export const SharingActions: React.FC<{}> = () => {
       >
         <SharingAction
           icon={(params) => <XIcon {...params} />}
-          label={"Post #GitHubUnwrapped"}
+          label={"Post #GiteeUnwrapped"}
           style={{ width: "100%", justifyContent: "flex-start", padding: 0 }}
         />
       </Link>

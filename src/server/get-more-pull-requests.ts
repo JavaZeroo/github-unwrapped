@@ -1,7 +1,4 @@
-import { executeGitHubGraphQlQuery } from "./fetch-stats.js";
-import type { PullRequestQueryResponse } from "./queries/pull-request.query.js";
-import { pullRequestQuery } from "./queries/pull-request.query.js";
-import { getQuery } from "./queries/query.js";
+import { executeGiteeApiRequest } from "./fetch-stats.js";
 import { YEAR_TO_REVIEW } from "./year.js";
 
 export const getMorePullRequests = async ({
@@ -11,29 +8,58 @@ export const getMorePullRequests = async ({
   username: string | null;
   token: string;
 }) => {
-  let done = false;
-  let cursor: string | null = null;
-  let safety = 0;
+  if (!username) {
+    return [];
+  }
 
+  let page = 1;
+  let safety = 0;
   const pullRequestData: Array<{ createdAt: string }> = [];
 
-  while (!done && safety < 20) {
-    const data = (await executeGitHubGraphQlQuery({
-      username,
+  while (safety < 10) {
+    // Gitee doesn't have a direct "user pull requests" endpoint
+    // We need to fetch events and filter for PR events
+    const events = (await executeGiteeApiRequest({
+      endpoint: `/users/${username}/events?page=${page}&per_page=100`,
       token,
-      query: getQuery(username, pullRequestQuery(cursor)),
-    })) as PullRequestQueryResponse;
+    })) as Array<{
+      type: string;
+      created_at: string;
+      payload?: {
+        action?: string;
+        pull_request?: {
+          created_at: string;
+        };
+      };
+    }> | null;
 
-    const prs = data.pullRequests.nodes
-      .filter((n) => n.createdAt.startsWith(String(YEAR_TO_REVIEW)))
-      .map((n) => ({ createdAt: n.createdAt }));
-
-    if (prs.length === 0 || prs.length !== data.pullRequests.nodes.length) {
-      done = true;
+    if (!events || events.length === 0) {
+      break;
     }
 
-    pullRequestData.push(...prs);
-    cursor = data.pullRequests.pageInfo.endCursor;
+    let foundOldPR = false;
+    for (const event of events) {
+      // PullRequestEvent indicates PR activity
+      if (event.type === "PullRequestEvent" && event.payload?.action === "opened") {
+        const prCreatedAt = event.payload.pull_request?.created_at || event.created_at;
+        if (prCreatedAt.startsWith(String(YEAR_TO_REVIEW))) {
+          pullRequestData.push({ createdAt: prCreatedAt });
+        } else if (new Date(prCreatedAt) < new Date(`${YEAR_TO_REVIEW}-01-01`)) {
+          foundOldPR = true;
+        }
+      }
+      
+      // Check if we've gone past the year
+      if (new Date(event.created_at) < new Date(`${YEAR_TO_REVIEW}-01-01`)) {
+        foundOldPR = true;
+      }
+    }
+
+    if (foundOldPR) {
+      break;
+    }
+
+    page++;
     safety++;
   }
 

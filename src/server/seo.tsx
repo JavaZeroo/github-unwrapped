@@ -2,9 +2,9 @@
 import React from "react";
 import * as Sentry from "@sentry/node";
 import { renderToString } from "react-dom/server";
-import { getRandomGithubToken } from "./github-token.js";
+import { getRandomGiteeToken } from "./gitee-token.js";
 import { backendCredentials } from "../helpers/domain.js";
-import { getStatsFromGitHubOrCache } from "./get-stats-from-github-or-cache.js";
+import { getStatsFromGiteeOrCache } from "./get-stats-from-gitee-or-cache.js";
 import { sendDiscordMessage } from "./discord.js";
 import { YEAR_TO_REVIEW } from "./year.js";
 
@@ -19,11 +19,11 @@ const makeAppHead = async (
   params: { handleUsername: boolean; stats: boolean },
 ): Promise<AppHead> => {
   if (username === null) {
-    const title = `#GitHubUnwrapped - Your coding year in review`;
+    const title = `#GiteeUnwrapped - Your coding year in review`;
 
     const mainSocialPreview = `${backendCredentials().VITE_HOST}/og_image.jpg`;
     const mainCanonical = `${backendCredentials().VITE_HOST}`;
-    const mainDescription = `Get your personalized video of your GitHub activity in ${YEAR_TO_REVIEW}.`;
+    const mainDescription = `Get your personalized video of your Gitee activity in ${YEAR_TO_REVIEW}.`;
 
     return {
       status: 200,
@@ -48,14 +48,14 @@ const makeAppHead = async (
 
   if (!params.stats) {
     const newHead = renderToString(
-      <title>{`${username}'s #GitHubUnwrapped`}</title>,
+      <title>{`${username}'s #GiteeUnwrapped`}</title>,
     );
     return { head: newHead, status: 200, cache: true };
   }
 
-  const stats = await getStatsFromGitHubOrCache({
+  const stats = await getStatsFromGiteeOrCache({
     username,
-    token: getRandomGithubToken(),
+    token: getRandomGiteeToken(),
     refreshCache: false,
   });
 
@@ -82,7 +82,7 @@ const makeAppHead = async (
     );
   }
 
-  const usernameTitle = `${stats.username}'s #GitHubUnwrapped`;
+  const usernameTitle = `${stats.username}'s #GiteeUnwrapped`;
   const canonical = `${backendCredentials().VITE_HOST}/${username}`;
   const socialPreview = `${backendCredentials().VITE_HOST}/og/${username}.jpg`;
   const description = `See ${username}'s year in review and get your own.`;

@@ -1,9 +1,13 @@
 import { Img } from "remotion";
 import { PANE_TEXT_COLOR } from "../TopLanguages/Pane";
 
+// Default fallback avatar for Gitee
+const DEFAULT_AVATAR = "https://gitee.com/assets/no_portrait.png";
+
 export const Title: React.FC<{
   login: string;
-}> = ({ login }) => {
+  avatarUrl?: string;
+}> = ({ login, avatarUrl }) => {
   return (
     <div
       style={{
@@ -24,7 +28,7 @@ export const Title: React.FC<{
       }}
     >
       <Img
-        src={`https://github.com/${login}.png`}
+        src={avatarUrl || DEFAULT_AVATAR}
         style={{
           width: 60,
           height: 60,

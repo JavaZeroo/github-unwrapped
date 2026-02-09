@@ -64,7 +64,7 @@ export const DownloadButton: React.FC<{
         className={[shadow.newdownload].join(" ")}
         style={{ ...style }}
         href={status.url}
-        download={`github-unwrapped-${YEAR_TO_REVIEW}.mp4`}
+        download={`gitee-unwrapped-${YEAR_TO_REVIEW}.mp4`}
       >
         <div
           style={{
